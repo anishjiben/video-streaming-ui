@@ -2,7 +2,7 @@ import { Player, PlayerEvent } from "bitmovin-player";
 import { useEffect, useRef, useState } from "react";
 import DashModule from "bitmovin-player/modules/bitmovinplayer-dash";
 import { UIFactory } from "bitmovin-player-ui";
-// import "bitmovin-player/bitmovinplayer-ui.css";
+import "bitmovin-player/bitmovinplayer-ui.css";
 const playerConfig = {
   key: "MY-PLAYER-KEY",
   playback: {
