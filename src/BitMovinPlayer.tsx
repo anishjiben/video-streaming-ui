@@ -14,7 +14,7 @@ const playerConfig = {
 export const BitMovinPlayer = () => {
   const [player, setPlayer] = useState<any>(null);
   const playerSource = {
-    dash: "http://localhost:8000/manifest.mpd",
+    hls: "https://streams.bitmovin.com/cla62u1ub16gfgc49f70/manifest.m3u8",
   };
 
   useEffect(() => {
