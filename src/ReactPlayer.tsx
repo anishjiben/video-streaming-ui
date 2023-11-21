@@ -6,7 +6,7 @@ export const ReactVideoPlayer = () => {
       <ReactPlayer
         muted={true}
         controls
-        url="https://streams.bitmovin.com/cla62u1ub16gfgc49f70/manifest.m3u8"
+        url="https://stgpartnerintegration.blob.core.windows.net/bitmovincontainer/camstreamer/manifest.mpd"
         config={{
           file: {
             attributes: {
