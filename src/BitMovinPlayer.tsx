@@ -11,31 +11,34 @@ const playerConfig = {
   },
 };
 
-export const BitMovinPlayer = () => {
+type BitMovinPlayerProps = {
+  url: string;
+};
+export const BitMovinPlayer = ({ url }: BitMovinPlayerProps) => {
   const [player, setPlayer] = useState<any>(null);
   const playerSource = {
-    dash: "https://stgpartnerintegration.blob.core.windows.net/bitmovincontainer/EncodingVIdeo/manifest.mpd",
+    dash: url?url:"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
   };
 
   useEffect(() => {
     function setupPlayer() {
-      Player.addModule(DashModule);
-      const playerInstance = new Player(
-        document.getElementById("player")!,
-        playerConfig
-      );
-      UIFactory.buildDefaultUI(playerInstance);
-      playerInstance.load(playerSource).then(
-        () => {
-          setPlayer(playerInstance);
-          console.log("Successfully loaded source");
-        },
-        () => {
-          console.log("Error while loading source");
-        }
-      );
-    }
+        Player.addModule(DashModule);
+        const playerInstance = new Player(
+          document.getElementById("player")!,
+          playerConfig
+        );
+        UIFactory.buildDefaultUI(playerInstance);
 
+        playerInstance.load(playerSource).then(
+          () => {
+            setPlayer(playerInstance);
+            console.log("Successfully loaded source");
+          },
+          () => {
+            console.log("Error while loading source");
+          }
+        );
+      }
     setupPlayer();
 
     return () => {
@@ -44,7 +47,7 @@ export const BitMovinPlayer = () => {
         setPlayer(null);
       }
     };
-  }, []);
+  }, [url]);
 
   return <div id="player" />;
 };

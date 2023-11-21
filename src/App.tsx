@@ -2,6 +2,10 @@ import { useState } from "react";
 import "./App.css";
 
 import { Dropdown } from "@WESCO-International/wdp-ui-components/components/dropdown";
+import { Input } from "@WESCO-International/wdp-ui-components/components/input";
+import { Button } from "@WESCO-International/wdp-ui-components/components/button";
+import { MdPlayArrow } from "@WESCO-International/react-svg-icons/md/MdPlayArrow";
+
 import ReactVideoPlayer from "./ReactPlayer";
 import { BitMovinPlayer } from "./BitMovinPlayer";
 
@@ -11,15 +15,16 @@ const dropdownOptions = [
 ];
 function App() {
   const [value, setValue] = useState("");
+  const [url, setUrl] = useState("");
 
   const renderComponent = () => {
     switch (value) {
       case "React Player":
-        return <ReactVideoPlayer />;
+        return <ReactVideoPlayer url={url} />;
       case "Bitmovin":
-        return <BitMovinPlayer />;
+        return <BitMovinPlayer url={url} />;
       default:
-        return <ReactVideoPlayer />;
+        return <ReactVideoPlayer url={url} />;
     }
   };
   return (
@@ -37,12 +42,20 @@ function App() {
               width: "200px",
             }}
           />
-
-          {/* <video id="videoPlayer" width="650" controls autoPlay muted>
-          <source src="http://localhost:8000/video#t=0" type="video/mp4" />
-        </video> */}
         </div>
         <div>{renderComponent()}</div>
+        <div className="flex g-2 mt-5 center">
+          <span>URL</span>{" "}
+          <Input
+            id="input1"
+            placeholder="Type your url here"
+            value={url}
+            onChange={(e: any) => {
+              console.log(e.target.value);
+              setUrl(e.target.value);
+            }}
+          />
+        </div>
       </div>
     </div>
   );
