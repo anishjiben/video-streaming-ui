@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 type ReactPlayerProps = {
   url: string;
@@ -9,7 +10,6 @@ export const ReactVideoPlayer = ({ url }: ReactPlayerProps) => {
       <ReactPlayer
         muted={true}
         controls
-        // url="https://stgpartnerintegration.blob.core.windows.net/bitmovincontainer/camstreamer/manifest.mpd"
         url={
           url
             ? url
