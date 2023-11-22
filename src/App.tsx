@@ -17,6 +17,7 @@ function App() {
   const [value, setValue] = useState("");
   const [url, setUrl] = useState("");
 
+  const props = { src: "" };
   const renderComponent = () => {
     switch (value) {
       case "React Player":
@@ -24,7 +25,7 @@ function App() {
       case "Bitmovin":
         return <BitMovinPlayer url={url} />;
       case "Shaka":
-        return <ShakaPlayer />;
+        return <ShakaPlayer src={url} />;
       default:
         return <ReactVideoPlayer url={url} />;
     }
