@@ -1,5 +1,4 @@
 import React from "react";
-// import shaka from "shaka-player";
 import shaka from "shaka-player/dist/shaka-player.ui";
 import "shaka-player/dist/controls.css";
 import { Button } from "@WESCO-International/wdp-ui-components/components/button";
@@ -80,15 +79,7 @@ function ShakaPlayer(
 
   return (
     <div ref={uiContainerRef} className={className}>
-      <video
-        id="shaka-player"
-        ref={videoRef}
-        style={{
-          maxWidth: "100%",
-          width: "100%",
-        }}
-        {...rest}
-      />
+      <video id="shaka-player" ref={videoRef} {...rest} />
       {/* <Button
         label="Play"
         onClick={() => {

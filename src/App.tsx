@@ -7,11 +7,13 @@ import { Input } from "@WESCO-International/wdp-ui-components/components/input";
 import ReactVideoPlayer from "./ReactPlayer";
 import { BitMovinPlayer } from "./BitMovinPlayer";
 import ShakaPlayer from "./ShakaPlayer";
+import MultiplePlayer from "./multi-player/MultiplePlayer";
 
 const dropdownOptions = [
   { label: "Bitmovin Player", value: "Bitmovin" },
   { label: "React Player", value: "React Player" },
   { label: "Shaka Player", value: "Shaka" },
+  { label: "Multiple Player", value: "Multiple" },
 ];
 function App() {
   const [value, setValue] = useState("");
@@ -26,13 +28,15 @@ function App() {
         return <BitMovinPlayer url={url} />;
       case "Shaka":
         return <ShakaPlayer src={url} />;
+      case "Multiple":
+        return <MultiplePlayer src={url} />;
       default:
         return <ReactVideoPlayer url={url} />;
     }
   };
   return (
-    <div className="App flex center" style={{ height: "100%" }}>
-      <div style={{ width: 650 }}>
+    <div className="App flex center p-5" style={{ height: "100%" }}>
+      <div style={{ width: "80%" }}>
         <div className="flex center sb m-5">
           <span className="text-header bold size-3 ff-header">
             Video Streaming
@@ -47,7 +51,7 @@ function App() {
           />
         </div>
         {value && url ? (
-          renderComponent()
+          <div className="flex center">{renderComponent()}</div>
         ) : (
           <div
             className="text-header font size-5 flex center"
