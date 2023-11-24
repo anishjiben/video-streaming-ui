@@ -1,20 +1,40 @@
 import { Button } from "@WESCO-International/wdp-ui-components/components/button";
+import { useState } from "react";
 
-type CameraListPros = {
-  cameraNames: Array<string>;
-  onCameraSelect: (cameraName: string) => void;
+export type Camera = {
+  name: string;
+  url: string;
 };
-export const CameraList = ({ cameraNames, onCameraSelect }: CameraListPros) => {
+type CameraListPros = {
+  cameraDetails: Array<Camera>;
+  onCameraSelect: (camera: Camera) => void;
+};
+export const CameraList = ({
+  cameraDetails,
+  onCameraSelect,
+}: CameraListPros) => {
+  const [selectedCamera, setSelectedCamera] = useState<{
+    name: string;
+    url: string;
+  }>();
   return (
     <div className="flex dcol">
-      {cameraNames.map((cameraName: string) => {
+      {cameraDetails.map((camera: Camera) => {
         return (
           <Button
+            key={camera.name}
             className="norad size-5 semi-bold"
             size="large"
-            label={cameraName}
+            label={camera.name}
             variant="wdp-ghost"
-            onClick={(e: any) => onCameraSelect(cameraName)}
+            onClick={(e: any) => {
+              onCameraSelect(camera);
+              setSelectedCamera(camera);
+            }}
+            style={{
+              backgroundColor:
+                selectedCamera?.name === camera.name ? "#ebffed" : "",
+            }}
           />
         );
       })}

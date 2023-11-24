@@ -1,70 +1,85 @@
 import { useEffect, useState } from "react";
-import CameraList from "./CameraList";
+import CameraList, { Camera } from "./CameraList";
 import MultiPlayerHeader from "./MultiPlayerHeader";
+import { arrayToMatrix } from "./PlayerUtils";
 
+const cameraDetails = [
+  { name: "Camera 1", url: "" },
+  { name: "Camera 2", url: "" },
+  { name: "Camera 3", url: "" },
+  { name: "Camera 4", url: "" },
+  { name: "Camera 5", url: "" },
+];
 export const MultiplePlayer = () => {
-  const cameraNames = ["Camera 1", "Camera 2", "Camera 3", "Camera 4"];
-  const [selectedCamera, setSelectedCamera] = useState<string>("");
+  const [selectedCamera, setSelectedCamera] = useState<Camera>();
   const [noOfRows, setnoOfRows] = useState<any>(1);
-  const createCameraGrid = () => {
-    const gridContainer = document.getElementById("grid-container");
-    if (gridContainer?.childElementCount) {
-      gridContainer.replaceChildren();
-    }
+  const [noOfCols, setnoOfCols] = useState<any>(1);
+  const [cameraMatrix, setCameraMatrix] = useState<any>([]);
 
-    for (let row = 0; row < noOfRows; row++) {
-      const rowElement = document.createElement("div");
-      rowElement.classList.add("cols", "m-0");
-
-      for (let col = 0; col < noOfRows; col++) {
-        const cellElement = document.createElement("div");
-        cellElement.classList.add("col", "m-1", "border", "bg-primary-light");
-
-        cellElement.textContent = `Row ${row + 1}, Column ${col + 1}`;
-        rowElement.appendChild(cellElement);
-      }
-
-      gridContainer?.appendChild(rowElement);
-    }
+  const updateCameraMatrix = (rows: number, cols: number) => {
+    const cameraMatrixTemp = arrayToMatrix(cameraDetails, cols);
+    setCameraMatrix(cameraMatrixTemp);
+    console.log(cameraMatrixTemp);
   };
-
   useEffect(() => {
-    createCameraGrid();
+    updateCameraMatrix(noOfRows, noOfCols);
   }, []);
-  useEffect(() => {
-    if (noOfRows) {
-      console.log(noOfRows);
-      createCameraGrid();
-    }
-  }, [noOfRows]);
 
+  const onMatrixSelected = (selectedMatrix: any) => {
+    setnoOfRows(+selectedMatrix.charAt(0));
+    setnoOfCols(+selectedMatrix.charAt(2));
+    updateCameraMatrix(+selectedMatrix.charAt(0), +selectedMatrix.charAt(2));
+  };
   return (
     <div className="h-100 w-100">
       <div className="border" style={{ height: "10%" }}>
         <MultiPlayerHeader
-          onMatrixSelected={(selectedMatrix) => {
-            setnoOfRows(+selectedMatrix.charAt(0));
-          }}
+          numberOfCameras={cameraDetails.length}
+          onMatrixSelected={onMatrixSelected}
         />
       </div>
       <div className="flex" style={{ height: "90%" }}>
         <div className="br" style={{ width: "20%" }}>
           <CameraList
-            cameraNames={cameraNames}
-            onCameraSelect={(cameraName: string) => {
+            cameraDetails={cameraDetails}
+            onCameraSelect={(camera: Camera) => {
               setnoOfRows(1);
-              setSelectedCamera(cameraName);
+              setnoOfCols(1);
+              setSelectedCamera(camera);
+              updateCameraMatrix(1, 1);
             }}
           />
         </div>
         <div
           id="grid-container"
+          className="p-2"
           style={{
             width: "80%",
             display: "grid",
             gridTemplateRows: `repeat(${noOfRows}, 1fr)`,
           }}
-        ></div>
+        >
+          {cameraMatrix[0] &&
+            cameraMatrix[0].length === noOfCols &&
+            [...Array(noOfRows)].map((_, row) => {
+              return (
+                <div key={row} className="cols m-0">
+                  {[...Array(noOfCols)].map((_, col) => {
+                    return cameraMatrix[row] && cameraMatrix[row][col].name ? (
+                      <div
+                        key={col}
+                        className="col m-2 border bg-primary-light"
+                      >
+                        {cameraMatrix[row][col].name}
+                      </div>
+                    ) : (
+                      <div className="col"></div>
+                    );
+                  })}
+                </div>
+              );
+            })}
+        </div>
       </div>
     </div>
   );
