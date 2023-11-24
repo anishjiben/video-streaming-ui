@@ -11,7 +11,9 @@ const cameraDetails = [
   { name: "Camera 5", url: "" },
 ];
 export const MultiplePlayer = () => {
-  const [selectedCamera, setSelectedCamera] = useState<Camera>();
+  const [selectedCamera, setSelectedCamera] = useState<Camera>(
+    cameraDetails[0]
+  );
   const [noOfRows, setnoOfRows] = useState<any>(1);
   const [noOfCols, setnoOfCols] = useState<any>(1);
   const [cameraMatrix, setCameraMatrix] = useState<any>([]);
@@ -42,6 +44,7 @@ export const MultiplePlayer = () => {
         <div className="br" style={{ width: "20%" }}>
           <CameraList
             cameraDetails={cameraDetails}
+            selectedCamera={selectedCamera}
             onCameraSelect={(camera: Camera) => {
               setnoOfRows(1);
               setnoOfCols(1);
@@ -70,7 +73,9 @@ export const MultiplePlayer = () => {
                         key={col}
                         className="col m-2 border bg-primary-light"
                       >
-                        {cameraMatrix[row][col].name}
+                        {noOfRows == 1
+                          ? selectedCamera?.name
+                          : cameraMatrix[row][col].name}
                       </div>
                     ) : (
                       <div className="col"></div>

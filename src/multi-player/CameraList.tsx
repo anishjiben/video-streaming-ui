@@ -6,17 +6,16 @@ export type Camera = {
   url: string;
 };
 type CameraListPros = {
+  selectedCamera: Camera;
   cameraDetails: Array<Camera>;
   onCameraSelect: (camera: Camera) => void;
 };
 export const CameraList = ({
+  selectedCamera,
   cameraDetails,
   onCameraSelect,
 }: CameraListPros) => {
-  const [selectedCamera, setSelectedCamera] = useState<{
-    name: string;
-    url: string;
-  }>();
+  // const [selectedCamera, setSelectedCamera] = useState<Camera>();
   return (
     <div className="flex dcol">
       {cameraDetails.map((camera: Camera) => {
@@ -29,7 +28,7 @@ export const CameraList = ({
             variant="wdp-ghost"
             onClick={(e: any) => {
               onCameraSelect(camera);
-              setSelectedCamera(camera);
+              // setSelectedCamera(camera);
             }}
             style={{
               backgroundColor:
