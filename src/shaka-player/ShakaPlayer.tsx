@@ -31,6 +31,7 @@ function ShakaPlayer(
 
   const [player, setPlayer] = React.useState<any>(null);
   const [ui, setUi] = React.useState<any>(null);
+  const [live, setLive] = React.useState<boolean>(false);
 
   // Effect to handle component mount & mount.
   // Not related to the src prop, this hook creates a shaka.Player instance.
@@ -41,20 +42,11 @@ function ShakaPlayer(
 
     let ui: any;
     if (!chromeless) {
-      // shaka.ui.Controls.registerElement(
-      //   "play-pause",
-      //   new VerticalVolumeFactory()
-      // );
-
-      const ui = new shaka.ui.Overlay(
+      ui = new shaka.ui.Overlay(
         player,
         uiContainerRef.current,
         videoRef.current
       );
-      // uiConfig['controlPanelElements'] = ['rewind', 'fast_forward', 'skip'];
-      // ui.configure({
-      //   controlPanelElements: ["fast_backward","play-pause","fast_forward", "mute"],
-      // });
       setUi(ui);
     }
 
@@ -76,8 +68,13 @@ function ShakaPlayer(
   // Load the source url when we have one.
   React.useEffect(() => {
     if (player && src) {
-      player.load(src);
-      console.log(player?.isLive());
+      player.load(src).then(() => {
+        console.log(player?.isLive());
+        setLive(player.isLive());
+        if (player.isLive()) {
+          player?.getMediaElement()?.play();
+        }
+      });
     }
   }, [player, src]);
 
@@ -100,24 +97,12 @@ function ShakaPlayer(
 
   return (
     <div ref={uiContainerRef} className="videoWrapper">
-      {/* <div className="flex sb">{player?.isLive() ? "Live" : ""}</div> */}
-      <div className="flex sb w-100 p-2 semibold size-6">
+      <div className="flex sb w-100 p-2 semibold size-6" style={{ zIndex: 99 }}>
         <span className="text-white">{cameraDetail?.name}</span>
-        <span className="text-primary-dark">
-          {player?.isLive() ? "Live" : ""}
-        </span>
+        <span className="text-primary-dark">{live ? "Live" : ""}</span>
       </div>
 
       <video id="shaka-player" ref={videoRef} {...rest} />
-      {/* <Button
-        label="Play"
-        onClick={() => {
-          if (player && src) {
-            player.load(src);
-            ui.play();
-          }
-        }}
-      /> */}
     </div>
   );
 }

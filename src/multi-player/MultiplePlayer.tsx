@@ -13,7 +13,10 @@ const cameraDetails = [
     name: "Camera 2",
     url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
   },
-  { name: "Camera 3", url: "" },
+  {
+    name: "Camera 3",
+    url: "https://stgpartnerintegration.blob.core.windows.net/bitmovincontainer/camstreamer/manifest.mpd",
+  },
   { name: "Camera 4", url: "" },
 ];
 export const MultiplePlayer = () => {
@@ -40,7 +43,7 @@ export const MultiplePlayer = () => {
   };
   return (
     <div className="h-100 w-100">
-      <div className="border" style={{ height: "10%" }}>
+      <div className="border" style={{ height: "fit-content" }}>
         <MultiPlayerHeader
           numberOfCameras={cameraDetails.length}
           onMatrixSelected={onMatrixSelected}
@@ -75,7 +78,7 @@ export const MultiplePlayer = () => {
                 <div key={row} className="cols m-0 flex center">
                   {[...Array(noOfCols)].map((_, col) => {
                     return cameraMatrix[row] && cameraMatrix[row][col].name ? (
-                      <div key={col} className="col m-2 p-0 border">
+                      <div key={col} className="col">
                         {noOfRows == 1 ? (
                           <ShakaPlayer
                             src={selectedCamera.url}
