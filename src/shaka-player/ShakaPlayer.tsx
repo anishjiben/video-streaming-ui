@@ -1,16 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import shaka from "shaka-player/dist/shaka-player.ui";
 import "shaka-player/dist/controls.css";
+import "./shaka-player.css";
 import { Button } from "@WESCO-International/wdp-ui-components/components/button";
+import PlayPauseButton, { VerticalVolumeFactory } from "./PlayPauseButton";
+import VerticalVolume from "./PlayPauseButton";
+import { FaVideo } from "@WESCO-International/react-svg-icons/fa/FaVideo";
+import { Camera } from "../multi-player/CameraList";
 
 type ShakaPlayerProps = {
   src: string;
   config?: any;
   className?: any;
   chromeless?: any;
+  cameraDetail?: Camera;
 };
 function ShakaPlayer(
-  { src, config, chromeless, className, ...rest }: ShakaPlayerProps,
+  {
+    src,
+    config,
+    chromeless,
+    className,
+    cameraDetail,
+    ...rest
+  }: ShakaPlayerProps,
   ref: any
 ) {
   const uiContainerRef = React.useRef<any>(null);
@@ -24,17 +37,24 @@ function ShakaPlayer(
   // This should always be the first effect to run.
   React.useEffect(() => {
     const player = new shaka.Player(videoRef.current);
-
     setPlayer(player);
 
     let ui: any;
     if (!chromeless) {
+      // shaka.ui.Controls.registerElement(
+      //   "play-pause",
+      //   new VerticalVolumeFactory()
+      // );
+
       const ui = new shaka.ui.Overlay(
         player,
         uiContainerRef.current,
         videoRef.current
       );
-      ui.configure({});
+      // uiConfig['controlPanelElements'] = ['rewind', 'fast_forward', 'skip'];
+      // ui.configure({
+      //   controlPanelElements: ["fast_backward","play-pause","fast_forward", "mute"],
+      // });
       setUi(ui);
     }
 
@@ -57,6 +77,7 @@ function ShakaPlayer(
   React.useEffect(() => {
     if (player && src) {
       player.load(src);
+      console.log(player?.isLive());
     }
   }, [player, src]);
 
@@ -78,7 +99,15 @@ function ShakaPlayer(
   );
 
   return (
-    <div ref={uiContainerRef} className={className}>
+    <div ref={uiContainerRef} className="videoWrapper">
+      {/* <div className="flex sb">{player?.isLive() ? "Live" : ""}</div> */}
+      <div className="flex sb w-100 p-2 semibold size-6">
+        <span className="text-white">{cameraDetail?.name}</span>
+        <span className="text-primary-dark">
+          {player?.isLive() ? "Live" : ""}
+        </span>
+      </div>
+
       <video id="shaka-player" ref={videoRef} {...rest} />
       {/* <Button
         label="Play"

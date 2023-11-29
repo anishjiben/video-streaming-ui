@@ -2,13 +2,19 @@ import { useEffect, useState } from "react";
 import CameraList, { Camera } from "./CameraList";
 import MultiPlayerHeader from "./MultiPlayerHeader";
 import { arrayToMatrix } from "./PlayerUtils";
+import ShakaPlayer from "../shaka-player/ShakaPlayer";
 
 const cameraDetails = [
-  { name: "Camera 1", url: "" },
-  { name: "Camera 2", url: "" },
+  {
+    name: "Camera 1",
+    url: "http://127.0.0.1:8000/manifest.mpd",
+  },
+  {
+    name: "Camera 2",
+    url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
+  },
   { name: "Camera 3", url: "" },
   { name: "Camera 4", url: "" },
-  { name: "Camera 5", url: "" },
 ];
 export const MultiplePlayer = () => {
   const [selectedCamera, setSelectedCamera] = useState<Camera>(
@@ -66,16 +72,21 @@ export const MultiplePlayer = () => {
             cameraMatrix[0].length === noOfCols &&
             [...Array(noOfRows)].map((_, row) => {
               return (
-                <div key={row} className="cols m-0">
+                <div key={row} className="cols m-0 flex center">
                   {[...Array(noOfCols)].map((_, col) => {
                     return cameraMatrix[row] && cameraMatrix[row][col].name ? (
-                      <div
-                        key={col}
-                        className="col m-2 border bg-primary-light"
-                      >
-                        {noOfRows == 1
-                          ? selectedCamera?.name
-                          : cameraMatrix[row][col].name}
+                      <div key={col} className="col m-2 p-0 border">
+                        {noOfRows == 1 ? (
+                          <ShakaPlayer
+                            src={selectedCamera.url}
+                            cameraDetail={selectedCamera}
+                          />
+                        ) : (
+                          <ShakaPlayer
+                            src={cameraMatrix[row][col].url}
+                            cameraDetail={cameraMatrix[row][col]}
+                          />
+                        )}
                       </div>
                     ) : (
                       <div className="col"></div>
