@@ -54,6 +54,11 @@ function App() {
       </div> */}
       <div className="br" style={{ width: "100%", height: "100%" }}>
         <MultiplePlayer />
+        {/* <ReactVideoPlayer
+          url={
+            "https://stgpartnerintegration.blob.core.windows.net/bitmovincontainer/camstreamer/manifest.mpd"
+          }
+        /> */}
       </div>
     </div>
   );

@@ -6,18 +6,21 @@ import ShakaPlayer from "../shaka-player/ShakaPlayer";
 
 const cameraDetails = [
   {
-    name: "Camera 1",
-    url: "http://127.0.0.1:8000/manifest.mpd",
+    name: "Camera Live",
+    url: "https://stgpartnerintegration.blob.core.windows.net/bitmovincontainer/camstreamer/manifest.mpd",
   },
   {
-    name: "Camera 2",
-    url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
+    name: "Camera mpeg-dash",
+    url: "https://stgpartnerintegration.blob.core.windows.net/bitmovincontainer/VOD1/manifest.mpd",
   },
   {
     name: "Camera 3",
-    url: "https://stgpartnerintegration.blob.core.windows.net/bitmovincontainer/camstreamer/manifest.mpd",
+    url: "",
   },
-  { name: "Camera 4", url: "" },
+  {
+    name: "Camera HLS",
+    url: "https://stgpartnerintegration.blob.core.windows.net/bitmovincontainer/VOD2/manifest.m3u8",
+  },
 ];
 export const MultiplePlayer = () => {
   const [selectedCamera, setSelectedCamera] = useState<Camera>(
@@ -75,17 +78,19 @@ export const MultiplePlayer = () => {
             cameraMatrix[0].length === noOfCols &&
             [...Array(noOfRows)].map((_, row) => {
               return (
-                <div key={row} className="cols m-0 flex center">
+                <div key={row} className="cols m-0 flex center bb">
                   {[...Array(noOfCols)].map((_, col) => {
                     return cameraMatrix[row] && cameraMatrix[row][col].name ? (
-                      <div key={col} className="col">
+                      <div key={col} className="col br">
                         {noOfRows == 1 ? (
                           <ShakaPlayer
+                            key={selectedCamera.url}
                             src={selectedCamera.url}
                             cameraDetail={selectedCamera}
                           />
                         ) : (
                           <ShakaPlayer
+                            key={cameraMatrix[row][col].url}
                             src={cameraMatrix[row][col].url}
                             cameraDetail={cameraMatrix[row][col]}
                           />

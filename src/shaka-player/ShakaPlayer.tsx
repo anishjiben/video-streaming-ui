@@ -1,11 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import shaka from "shaka-player/dist/shaka-player.ui";
 import "shaka-player/dist/controls.css";
 import "./shaka-player.css";
-import { Button } from "@WESCO-International/wdp-ui-components/components/button";
-import PlayPauseButton, { VerticalVolumeFactory } from "./PlayPauseButton";
-import VerticalVolume from "./PlayPauseButton";
-import { FaVideo } from "@WESCO-International/react-svg-icons/fa/FaVideo";
 import { Camera } from "../multi-player/CameraList";
 
 type ShakaPlayerProps = {
@@ -37,30 +33,33 @@ function ShakaPlayer(
   // Not related to the src prop, this hook creates a shaka.Player instance.
   // This should always be the first effect to run.
   React.useEffect(() => {
-    const player = new shaka.Player(videoRef.current);
-    setPlayer(player);
+    if (player) player.destroy();
+    if (src) {
+      const player = new shaka.Player(videoRef.current);
+      setPlayer(player);
 
-    let ui: any;
-    if (!chromeless) {
-      ui = new shaka.ui.Overlay(
-        player,
-        uiContainerRef.current,
-        videoRef.current
-      );
-      setUi(ui);
-    }
-
-    return () => {
-      player.destroy();
-      if (ui) {
-        ui.destroy();
+      let ui: any;
+      if (!chromeless) {
+        ui = new shaka.ui.Overlay(
+          player,
+          uiContainerRef.current,
+          videoRef.current
+        );
+        setUi(ui);
       }
-    };
+      return () => {
+        player.destroy();
+        if (ui) {
+          console.log(ui);
+          ui.destroy();
+        }
+      };
+    }
   }, []);
 
   // Keep shaka.Player.configure in sync.
   React.useEffect(() => {
-    if (player && config) {
+    if (player && config && src) {
       player.configure(config);
     }
   }, [player, config]);
@@ -94,7 +93,13 @@ function ShakaPlayer(
     }),
     [player, ui]
   );
-
+  if (!src) {
+    return (
+      <div className="flex center">
+        <img src={process.env.PUBLIC_URL + "/wesco.png"} />
+      </div>
+    );
+  }
   return (
     <div ref={uiContainerRef} className="videoWrapper">
       <div className="flex sb w-100 p-2 semibold size-6" style={{ zIndex: 99 }}>
@@ -102,7 +107,12 @@ function ShakaPlayer(
         <span className="text-primary-dark">{live ? "Live" : ""}</span>
       </div>
 
-      <video id="shaka-player" ref={videoRef} {...rest} />
+      <video
+        id="shaka-player"
+        ref={videoRef}
+        {...rest}
+        src={process.env.PUBLIC_URL + "/wesco.png"}
+      />
     </div>
   );
 }
