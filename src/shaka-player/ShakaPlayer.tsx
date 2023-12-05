@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useCallback } from "react";
 import shaka from "shaka-player/dist/shaka-player.ui";
 import "shaka-player/dist/controls.css";
 import "./shaka-player.css";
 import { Camera } from "../multi-player/CameraList";
+import { error } from "console";
+import { Notify } from "@WESCO-International/wdp-ui-components/components/notify";
 
 type ShakaPlayerProps = {
   src: string;
@@ -28,52 +30,100 @@ function ShakaPlayer(
   const [player, setPlayer] = React.useState<any>(null);
   const [ui, setUi] = React.useState<any>(null);
   const [live, setLive] = React.useState<boolean>(false);
+  const [playbackError, setPlaybackError] = React.useState<any>();
+  const [listner, setListner] = React.useState<any>();
 
+  const handlePlaybackError = useCallback((error: any) => {
+    console.log(cameraDetail?.name, ":", error);
+    if (error.severity === shaka.util.Error.Severity.CRITICAL) {
+      setPlaybackError(error);
+      if (player) {
+        player.unload();
+        player.destroy();
+        setPlayer(null);
+      }
+      if (ui) {
+        ui.destroy();
+        setUi(null);
+      }
+    }
+  }, []);
+
+  const vodManifestNotFoundHandler = (
+    neError: any /* shaka.net.NetworkingEngine.RetryEvent */
+  ) => {
+    const code = neError.error.code;
+    const data = neError.error.data;
+
+    if (code === shaka.util.Error.Code.BAD_HTTP_STATUS) {
+      if (
+        // each type of error has its own data structure (or none at all), tread with care
+        Array.isArray(data) &&
+        data[1] === 404 &&
+        data[4] === shaka.net.NetworkingEngine.RequestType.MANIFEST
+      ) {
+        // Throwing inside a retry callback will immediately stop retries
+        throw new Error(neError.error);
+
+        // A proprietary error code can also be thrown
+        // throw new shaka.util.Error(
+        //   shaka.util.Error.Severity.CRITICAL,
+        //   shaka.util.Error.Category.NETWORK,
+        //   'RECOGNIZABLE_ERROR_MESSAGE'
+        // );
+      }
+    }
+  };
   // Effect to handle component mount & mount.
   // Not related to the src prop, this hook creates a shaka.Player instance.
   // This should always be the first effect to run.
   React.useEffect(() => {
     if (player) player.destroy();
     if (src) {
-      const player = new shaka.Player(videoRef.current);
-      setPlayer(player);
+      const tempplayer = new shaka.Player(videoRef.current);
+      tempplayer.addEventListener("error", (networkErr: any) =>
+        handlePlaybackError(networkErr.detail)
+      );
+      tempplayer.addEventListener("retry", vodManifestNotFoundHandler);
 
-      let ui: any;
+      if (config) {
+        tempplayer.configure(config);
+      }
+
+      let tempUi: any;
       if (!chromeless) {
-        ui = new shaka.ui.Overlay(
-          player,
+        tempUi = new shaka.ui.Overlay(
+          tempplayer,
           uiContainerRef.current,
           videoRef.current
         );
-        setUi(ui);
+        setUi(tempUi);
       }
+      setPlayer(tempplayer);
       return () => {
-        player.destroy();
-        if (ui) {
-          console.log(ui);
-          ui.destroy();
+        tempplayer.destroy();
+        if (tempUi) {
+          tempUi.destroy();
         }
       };
     }
   }, []);
 
-  // Keep shaka.Player.configure in sync.
-  React.useEffect(() => {
-    if (player && config && src) {
-      player.configure(config);
-    }
-  }, [player, config]);
-
   // Load the source url when we have one.
   React.useEffect(() => {
     if (player && src) {
-      player.load(src).then(() => {
-        console.log(player?.isLive());
-        setLive(player.isLive());
-        if (player.isLive()) {
-          player?.getMediaElement()?.play();
-        }
-      });
+      // handle errors that occur after load
+      player
+        .load(src)
+        .then(() => {
+          setLive(player.isLive());
+          if (player.isLive()) {
+            player?.getMediaElement()?.play();
+          }
+        })
+        .catch((networkErr: any) => {
+          handlePlaybackError(networkErr);
+        });
     }
   }, [player, src]);
 
@@ -93,22 +143,36 @@ function ShakaPlayer(
     }),
     [player, ui]
   );
-  if (!src) {
+  if (!src || playbackError) {
     return (
-      <div className="flex center">
+      <div
+        className="flex center border"
+        style={{ position: "relative", borderColor: "red", minWidth: 200 }}
+      >
         <img src={process.env.PUBLIC_URL + "/wesco.png"} />
+        {playbackError ? (
+          <Notify
+            style={{ position: "absolute" }}
+            variant="danger"
+            msg={`Failed to load video (Error code : ${playbackError.code})`}
+            closable={false}
+            title="Error"
+          />
+        ) : (
+          ""
+        )}
       </div>
     );
   }
   return (
-    <div ref={uiContainerRef} className="videoWrapper">
+    <div id={cameraDetail?.name} ref={uiContainerRef} className="videoWrapper">
       <div className="flex sb w-100 p-2 semibold size-6" style={{ zIndex: 99 }}>
         <span className="text-white">{cameraDetail?.name}</span>
         <span className="text-primary-dark">{live ? "Live" : ""}</span>
       </div>
 
       <video
-        id="shaka-player"
+        id={cameraDetail?.name + "video"}
         ref={videoRef}
         {...rest}
         src={process.env.PUBLIC_URL + "/wesco.png"}
