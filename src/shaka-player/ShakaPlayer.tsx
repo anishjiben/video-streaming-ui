@@ -3,7 +3,6 @@ import shaka from "shaka-player/dist/shaka-player.ui";
 import "shaka-player/dist/controls.css";
 import "./shaka-player.css";
 import { Camera } from "../multi-player/CameraList";
-import { error } from "console";
 import { Notify } from "@WESCO-International/wdp-ui-components/components/notify";
 
 type ShakaPlayerProps = {
@@ -31,7 +30,6 @@ function ShakaPlayer(
   const [ui, setUi] = React.useState<any>(null);
   const [live, setLive] = React.useState<boolean>(false);
   const [playbackError, setPlaybackError] = React.useState<any>();
-  const [listner, setListner] = React.useState<any>();
 
   const handlePlaybackError = useCallback((error: any) => {
     console.log(cameraDetail?.name, ":", error);
@@ -147,7 +145,11 @@ function ShakaPlayer(
     return (
       <div
         className="flex center border"
-        style={{ position: "relative", borderColor: "red", minWidth: 200 }}
+        style={{
+          position: "relative",
+          borderColor: playbackError ? "red" : "",
+          minWidth: 200,
+        }}
       >
         <img src={process.env.PUBLIC_URL + "/wesco.png"} />
         {playbackError ? (

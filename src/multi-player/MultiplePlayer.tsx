@@ -4,7 +4,7 @@ import MultiPlayerHeader from "./MultiPlayerHeader";
 import { arrayToMatrix } from "./PlayerUtils";
 import ShakaPlayer from "../shaka-player/ShakaPlayer";
 
-const cameraDetails = [
+const defaultCameraDetails = [
   {
     name: "Camera Live",
     url: "https://stgpartnerintegration.blob.core.windows.net/bitmovincontainer/camstreamer/manifest.mpd",
@@ -23,9 +23,8 @@ const cameraDetails = [
   },
 ];
 export const MultiplePlayer = () => {
-  const [selectedCamera, setSelectedCamera] = useState<Camera>(
-    cameraDetails[0]
-  );
+  const [cameraDetails, setCameraDetails] = useState(defaultCameraDetails);
+  const [selectedCamera, setSelectedCamera] = useState<any>(cameraDetails[0]);
   const [noOfRows, setnoOfRows] = useState<any>(1);
   const [noOfCols, setnoOfCols] = useState<any>(1);
   const [cameraMatrix, setCameraMatrix] = useState<any>([]);
@@ -39,10 +38,22 @@ export const MultiplePlayer = () => {
     updateCameraMatrix(noOfRows, noOfCols);
   }, []);
 
+  useEffect(() => {
+    console.log("camera detailss : ", cameraDetails);
+  }, [cameraDetails]);
+
   const onMatrixSelected = (selectedMatrix: any) => {
     setnoOfRows(+selectedMatrix.charAt(0));
     setnoOfCols(+selectedMatrix.charAt(2));
+    setSelectedCamera(undefined);
     updateCameraMatrix(+selectedMatrix.charAt(0), +selectedMatrix.charAt(2));
+  };
+  const onDetailsUpdated = (details: any[]) => {
+    setCameraDetails(details);
+    setnoOfRows(1);
+    setnoOfCols(1);
+    setSelectedCamera(details[0]);
+    updateCameraMatrix(1, 1);
   };
   return (
     <div className="h-100 w-100">
@@ -50,6 +61,7 @@ export const MultiplePlayer = () => {
         <MultiPlayerHeader
           numberOfCameras={cameraDetails.length}
           onMatrixSelected={onMatrixSelected}
+          onUrlUpdated={onDetailsUpdated}
         />
       </div>
       <div className="flex" style={{ height: "90%" }}>
