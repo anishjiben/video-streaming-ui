@@ -116,7 +116,9 @@ function ShakaPlayer(
         .then(() => {
           setLive(player.isLive());
           if (player.isLive()) {
-            player?.getMediaElement()?.play();
+            videoRef.current.play();
+            // player?.getMediaElement()?.play();
+            // player.play();
           }
         })
         .catch((networkErr: any) => {
@@ -168,7 +170,7 @@ function ShakaPlayer(
   }
   return (
     <div id={cameraDetail?.name} ref={uiContainerRef} className="videoWrapper">
-      <div className="flex sb w-100 p-2 semibold size-6" style={{ zIndex: 99 }}>
+      <div className="flex sb w-100 p-2 semibold size-6" style={{ zIndex: 9 }}>
         <span className="text-white">{cameraDetail?.name}</span>
         <span className="text-primary-dark">{live ? "Live" : ""}</span>
       </div>
@@ -178,6 +180,7 @@ function ShakaPlayer(
         ref={videoRef}
         {...rest}
         src={process.env.PUBLIC_URL + "/wesco.png"}
+        autoPlay={live}
       />
     </div>
   );

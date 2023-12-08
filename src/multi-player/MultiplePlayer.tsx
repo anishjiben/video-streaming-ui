@@ -6,20 +6,20 @@ import ShakaPlayer from "../shaka-player/ShakaPlayer";
 
 const defaultCameraDetails = [
   {
-    name: "Camera Live",
-    url: "https://stgpartnerintegration.blob.core.windows.net/bitmovincontainer/camstreamer/manifest.mpd",
-  },
-  {
-    name: "Camera mpeg-dash",
+    name: "VOD MPEG-DASH",
     url: "https://stgpartnerintegration.blob.core.windows.net/bitmovincontainer/VOD1/manifest.mpd",
   },
   {
-    name: "Camera 3",
-    url: "",
+    name: "VOD HLS",
+    url: "https://stgpartnerintegration.blob.core.windows.net/bitmovincontainer/VOD2/manifest.m3u8",
   },
   {
-    name: "Camera HLS",
-    url: "https://stgpartnerintegration.blob.core.windows.net/bitmovincontainer/VOD2/manifest.m3u8",
+    name: "LIVE MPEG-DASH",
+    url: "https://stgpartnerintegration.blob.core.windows.net/bitmovincontainer/camstreamer1/manifest.mpd",
+  },
+  {
+    name: "LIVE HLS",
+    url: "https://stgpartnerintegration.blob.core.windows.net/bitmovincontainer/camstreamer2/manifest.mpd",
   },
 ];
 export const MultiplePlayer = () => {
