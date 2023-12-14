@@ -8,6 +8,9 @@ import ReactVideoPlayer from "./ReactPlayer";
 import { BitMovinPlayer } from "./BitMovinPlayer";
 import ShakaPlayer from "./shaka-player/ShakaPlayer";
 import MultiplePlayer from "./multi-player/MultiplePlayer";
+import WebRtcPlayer from "./webrtc-player/WebRtcPlayer";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import MobileAppComponent from "./mobile-app-component/MobileAppComponent";
 
 const dropdownOptions = [
   { label: "Bitmovin Player", value: "Bitmovin" },
@@ -23,7 +26,14 @@ function App() {
   return (
     <div className="" style={{ height: "100%" }}>
       <div className="br" style={{ width: "100%", height: "100%" }}>
-        <MultiplePlayer />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<WebRtcPlayer />} />
+            <Route path="mobile" element={<MobileAppComponent />} />
+          </Routes>
+        </BrowserRouter>
+        {/* <MultiplePlayer /> */}
+        {/* <WebRtcPlayer /> */}
       </div>
     </div>
   );
