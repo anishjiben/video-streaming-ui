@@ -20,6 +20,7 @@ export const WebRtcPlayer = () => {
   const [idToCall, setIdToCall] = useState<string>();
   const [peerConnection, setPeerConnection] = useState<RTCPeerConnection>();
   const [offer, setOffer] = useState<any>();
+  const [iceCandidate, setIceCandidate] = useState<any>();
 
   const configuration = {
     iceServers: [
@@ -52,15 +53,17 @@ export const WebRtcPlayer = () => {
           }
         }
       );
-      peerConnection.addEventListener("icecandidate", async (event) => {
-        if (event.candidate) {
-          socket.emit("message", {
-            from: id,
-            to: idToCall,
-            type: "new-ice-candidate",
-            iceCandidate: event.candidate,
-          });
-        }
+      peerConnection.addEventListener("icecandidate", (event) => {
+        // console.log("icecandidate : ", event);
+        setIceCandidate(event.candidate);
+        // if (event.candidate) {
+        //   socket.emit("message", {
+        //     from: id,
+        //     to: idToCall,
+        //     type: "new-ice-candidate",
+        //     iceCandidate: event.candidate,
+        //   });
+        // }
       });
       peerConnection.addEventListener("track", (event) => {
         console.log("Track received : ", event);
@@ -68,11 +71,11 @@ export const WebRtcPlayer = () => {
         videoRef.current.srcObject = remoteStream;
       });
       socket.on("message", async (data: any) => {
-        console.log(data);
         if (data.type === "answer") {
           const remoteDesc = new RTCSessionDescription(data.answer);
           await peerConnection.setRemoteDescription(remoteDesc);
         } else if (data.type === "new-ice-candidate") {
+          console.log(data.iceCandidate);
           await peerConnection.addIceCandidate(data.iceCandidate);
         }
       });
@@ -92,6 +95,15 @@ export const WebRtcPlayer = () => {
         type: "offer",
         offer: offer,
       });
+      if (iceCandidate) {
+        console.log(iceCandidate);
+        socket.emit("message", {
+          from: me,
+          to: idToCall,
+          type: "new-ice-candidate",
+          iceCandidate: iceCandidate,
+        });
+      }
     }
   };
 

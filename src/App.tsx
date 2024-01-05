@@ -11,6 +11,7 @@ import MultiplePlayer from "./multi-player/MultiplePlayer";
 import WebRtcPlayer from "./webrtc-player/WebRtcPlayer";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MobileAppComponent from "./mobile-app-component/MobileAppComponent";
+import AxisVideoPlayer from "./webrtc-player/AxisVideoPlayer";
 
 const dropdownOptions = [
   { label: "Bitmovin Player", value: "Bitmovin" },
@@ -28,7 +29,7 @@ function App() {
       <div className="br" style={{ width: "100%", height: "100%" }}>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<WebRtcPlayer />} />
+            <Route path="/" element={<AxisVideoPlayer />} />
             <Route path="mobile" element={<MobileAppComponent />} />
           </Routes>
         </BrowserRouter>

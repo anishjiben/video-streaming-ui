@@ -50,7 +50,6 @@ export const MobileAppComponent = () => {
       );
 
       socket.on("message", async (data: any) => {
-        console.log(data);
         if (data.type === "offer") {
           peerConnection.setRemoteDescription(
             new RTCSessionDescription(data.offer)
@@ -64,17 +63,18 @@ export const MobileAppComponent = () => {
             answer: answer,
           });
         } else if (data.type === "new-ice-candidate") {
+          console.log(data);
           await peerConnection.addIceCandidate(data.iceCandidate);
         }
         setInitiater(data);
-        peerConnection.addEventListener("icecandidate", (event) => {
-          // console.log("connection status : ", event);
-          if (event.candidate) {
+        peerConnection.addEventListener("icecandidate", (candidateEv: any) => {
+          console.log("ice candidate : ", candidateEv.candidate);
+          if (candidateEv.candidate) {
             socket.emit("message", {
               from: id,
               to: data.from,
               type: "new-ice-candidate",
-              iceCandidate: event.candidate,
+              iceCandidate: candidateEv.candidate,
             });
           }
         });

@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import shaka from "shaka-player/dist/shaka-player.ui";
+import shaka, { Player } from "shaka-player/dist/shaka-player.ui";
 import "shaka-player/dist/controls.css";
 import "./shaka-player.css";
 import { Camera } from "../multi-player/CameraList";
@@ -78,7 +78,7 @@ function ShakaPlayer(
   React.useEffect(() => {
     if (player) player.destroy();
     if (src) {
-      const tempplayer = new shaka.Player(videoRef.current);
+      const tempplayer: Player = new shaka.Player(videoRef.current);
       tempplayer.addEventListener("error", (networkErr: any) =>
         handlePlaybackError(networkErr.detail)
       );
@@ -95,6 +95,7 @@ function ShakaPlayer(
           uiContainerRef.current,
           videoRef.current
         );
+        console.log("Temp UI : ", typeof tempUi);
         setUi(tempUi);
       }
       setPlayer(tempplayer);
