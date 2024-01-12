@@ -29,12 +29,12 @@ function App() {
       <div className="br" style={{ width: "100%", height: "100%" }}>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<AxisVideoPlayer />} />
-            <Route path="mobile" element={<MobileAppComponent />} />
+            <Route path="/" element={<MultiplePlayer />} />
+            <Route path="axis-webrtc" element={<AxisVideoPlayer />} />
           </Routes>
         </BrowserRouter>
         {/* <MultiplePlayer /> */}
-        {/* <WebRtcPlayer /> */}
+        {/* <AxisVideoPlayer /> */}
       </div>
     </div>
   );

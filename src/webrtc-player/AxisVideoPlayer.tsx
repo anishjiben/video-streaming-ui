@@ -6,7 +6,7 @@ export const AxisVideoPlayer = () => {
   let targetId: string = "B8A44F48FC66";
   let orgId: string = "50a2c960-d9a2-4255-a03b-046ac19aab56";
   let access_token: string =
-    "xaxismachinesession_91d32a8b-5266-4691-bf5f-7c1182bf9e78";
+    "xaxismachinesession_de5af456-b93b-44d7-aca8-203afa66c8dc";
 
   let init_session_params: any;
   let ws_connection: WebSocket;
@@ -365,7 +365,7 @@ export const AxisVideoPlayer = () => {
     // };
   }, [signalingServerURL]);
   return (
-    <div>
+    <div className="flex center w-100 h-100">
       <video id="axis-webrtc-player-web" autoPlay />
     </div>
   );
