@@ -6,7 +6,7 @@ export const AxisVideoPlayer = () => {
   let targetId: string = "B8A44F48FC66";
   let orgId: string = "50a2c960-d9a2-4255-a03b-046ac19aab56";
   let access_token: string =
-    "xaxismachinesession_de5af456-b93b-44d7-aca8-203afa66c8dc";
+    "xaxismachinesession_abd183a2-c990-49a5-81ec-5442908a6a27";
 
   let init_session_params: any;
   let ws_connection: WebSocket;
@@ -192,7 +192,7 @@ export const AxisVideoPlayer = () => {
     }
   }
   function onTrack(evt: any) {
-    console.log("ontrack: Incoming media stream");
+    console.log("ontrack: Incoming media stream : ", evt);
     remoteStream.addTrack(evt.track, remoteStream);
     const videopanel: any = document.getElementById("axis-webrtc-player-web");
     videopanel.srcObject = evt.streams[0];
