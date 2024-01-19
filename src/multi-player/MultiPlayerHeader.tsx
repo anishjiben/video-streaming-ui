@@ -59,8 +59,7 @@ export const MultiPlayerHeader = ({
     setData(newState);
   };
   return (
-    <div className="flex sb center px-5" style={{ height: 60 }}>
-      <WescoLogo style={{ height: 60 }} />
+    <div className="flex end center px-5" style={{ height: 60 }}>
       <div className="flex g-2">
         <Dialog
           open={open}

@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 
-export const AxisVideoPlayer = () => {
+export const AxisVideoPlayerWrapper = () => {
   const sessionId = "1";
   const context = "1";
   let targetId: string = "B8A44F48FC66";
   let orgId: string = "50a2c960-d9a2-4255-a03b-046ac19aab56";
   let access_token: string =
-    "xaxismachinesession_fe943fb0-bad6-41e6-8825-ab64703403b6";
+    "xaxismachinesession_e4a2f57d-ca62-42c8-ace7-9fc57d4fcd69";
 
   let init_session_params: any;
   let ws_connection: WebSocket;
@@ -30,17 +30,17 @@ export const AxisVideoPlayer = () => {
 
   const onWebsocketOpen = (evt: any) => {
     console.log("WebSocket Open: ", evt);
-    ws_connection.send('{"type":"hello", "id":"noid"}');
-    start_time = new Date().getTime();
+    // ws_connection.send('{"type":"hello", "id":"noid"}');
+    // start_time = new Date().getTime();
 
-    sendSignalingMessage("initSession", {
-      apiVersion: "1.0",
-      type: "request",
-      sessionId: sessionId,
-      method: "initSession",
-      context: context,
-      params: init_session_params,
-    });
+    // sendSignalingMessage("initSession", {
+    //   apiVersion: "1.0",
+    //   type: "request",
+    //   sessionId: sessionId,
+    //   method: "initSession",
+    //   context: context,
+    //   params: init_session_params,
+    // });
   };
   function onWebsocketError(evt: any) {
     console.log("WebSocket Error: ", evt);
@@ -231,6 +231,20 @@ export const AxisVideoPlayer = () => {
       return;
     }
     const type = m["type"];
+    if (type === "connected") {
+      ws_connection.send('{"type":"hello", "id":"noid"}');
+      start_time = new Date().getTime();
+
+      sendSignalingMessage("initSession", {
+        apiVersion: "1.0",
+        type: "request",
+        sessionId: sessionId,
+        method: "initSession",
+        context: context,
+        params: init_session_params,
+      });
+      return;
+    }
 
     if (type == "hello") {
       // just an ack of our hello-message, do nothing
@@ -289,7 +303,7 @@ export const AxisVideoPlayer = () => {
 
   function connectWebsocket() {
     console.log("executed twice");
-    ws_connection = new WebSocket(signalingServerURL);
+    ws_connection = new WebSocket("ws://localhost:8080");
     ws_connection.onopen = onWebsocketOpen;
     ws_connection.onerror = onWebsocketError;
     ws_connection.onclose = onWebsocketClose;
@@ -371,4 +385,4 @@ export const AxisVideoPlayer = () => {
   );
 };
 
-export default AxisVideoPlayer;
+export default AxisVideoPlayerWrapper;

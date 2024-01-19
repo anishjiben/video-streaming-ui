@@ -12,6 +12,9 @@ import WebRtcPlayer from "./webrtc-player/WebRtcPlayer";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MobileAppComponent from "./mobile-app-component/MobileAppComponent";
 import AxisVideoPlayer from "./webrtc-player/AxisVideoPlayer";
+import AxisVideoPlayerWrapper from "./webrtc-player/AxisVideoPlayerWrapper";
+import MainLayout from "./main-layout/MainLayout";
+import IncidentDetection from "./incident-detection/IncidentDetection";
 
 const dropdownOptions = [
   { label: "Bitmovin Player", value: "Bitmovin" },
@@ -25,18 +28,23 @@ function App() {
 
   const props = { src: "" };
   return (
-    <div className="" style={{ height: "100%" }}>
-      <div className="br" style={{ width: "100%", height: "100%" }}>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<MultiplePlayer />} />
-            <Route path="axis-webrtc" element={<AxisVideoPlayer />} />
-          </Routes>
-        </BrowserRouter>
-        {/* <MultiplePlayer /> */}
-        {/* <AxisVideoPlayer /> */}
-      </div>
-    </div>
+    <>
+      {/* <div className="br" style={{ width: "100%", height: "100%" }}> */}
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<MainLayout />}>
+            <Route index path="multi-view" element={<MultiplePlayer />} />
+            <Route path="axis-webrtc" element={<AxisVideoPlayerWrapper />} />
+            <Route path="incident-detection" element={<IncidentDetection />} />
+          </Route>
+          {/* <Route path="/" element={<MultiplePlayer />} />
+            <Route path="axis-webrtc" element={<AxisVideoPlayerWrapper />} /> */}
+        </Routes>
+      </BrowserRouter>
+      {/* <MultiplePlayer /> */}
+      {/* <AxisVideoPlayer /> */}
+      {/* </div> */}
+    </>
   );
 }
 

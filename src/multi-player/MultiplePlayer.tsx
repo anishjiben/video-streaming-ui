@@ -90,7 +90,7 @@ export const MultiplePlayer = () => {
             cameraMatrix[0].length === noOfCols &&
             [...Array(noOfRows)].map((_, row) => {
               return (
-                <div key={row} className="cols m-0 flex center bb">
+                <div key={row} className="cols bb">
                   {[...Array(noOfCols)].map((_, col) => {
                     return cameraMatrix[row] && cameraMatrix[row][col].name ? (
                       <div key={col} className="col br">
