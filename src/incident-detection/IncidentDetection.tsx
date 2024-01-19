@@ -6,6 +6,7 @@ import { MdPlayCircleOutline } from "@WESCO-International/react-svg-icons/md/MdP
 import { Dialog } from "@WESCO-International/wdp-ui-components/components/dialog";
 import ShakaPlayer from "../shaka-player/ShakaPlayer";
 import { MdClose } from "@WESCO-International/react-svg-icons/md/MdClose";
+import CameraList, { Camera } from "../multi-player/CameraList";
 
 const TableCols = [
   { key: "name", name: "Name" },
@@ -87,23 +88,43 @@ export const IncidentDetection = () => {
       url: "https://stgpartnerintegration.blob.core.windows.net/bitmovincontainer/VOD1/manifest.mpd",
     },
   ]);
+  const [selectedCamera, setSelectedCamera] = useState<any>(incidents[0]);
   useEffect(() => {
     fetch("http://20.25.113.232:8081/media")
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
+        setIncidents(data);
       })
       .catch((err) => {
         console.log(err.message);
       });
   }, []);
   return (
-    <div className="p-4 h-100 g-4">
-      <div
-        className="shadow-2"
-        style={{ height: "35rem", width: "50rem", margin: "auto" }}
-      >
-        <ClientDataTable columns={TableCols} rows={incidents} paginate />
+    <div className="p-4 h-100 w-100 g-1 flex">
+      {/* <div style={{ height: "35rem", width: "50rem", margin: "auto" }}> */}
+      {/* <div className="text-header semibold size-5">Detected Incidents</div> */}
+      {/* <div className="shadow-2 h-100">
+          <ClientDataTable columns={TableCols} rows={incidents} paginate />
+        </div> */}
+      {/* </div> */}
+      <div className="rad-xl flex h-100 shadow-2 w-100">
+        <div className="br h-100 " style={{ width: "20%", overflow: "auto" }}>
+          <CameraList
+            cameraDetails={incidents}
+            selectedCamera={selectedCamera}
+            onCameraSelect={(camera: Camera) => {
+              setSelectedCamera(camera);
+            }}
+          />
+        </div>
+        <div className="p-5 h-100" style={{ width: "80%" }}>
+          <ShakaPlayer
+            key={selectedCamera.url}
+            src={selectedCamera.url}
+            cameraDetail={selectedCamera}
+          />
+        </div>
       </div>
     </div>
   );

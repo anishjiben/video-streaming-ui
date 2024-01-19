@@ -30,8 +30,8 @@ export const LeftNavItems = () => {
 export const MainLayout = () => {
   return (
     <>
-      <Navbar left={<LeftNavItems />} style={{ position: "sticky" }} />
-      <div className="background-light h-100">
+      <Navbar left={<LeftNavItems />} />
+      <div className="main-wrapper  background-light h-100">
         <Outlet />
       </div>
     </>
