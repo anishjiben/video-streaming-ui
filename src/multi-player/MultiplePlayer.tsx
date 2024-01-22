@@ -56,15 +56,15 @@ export const MultiplePlayer = () => {
     updateCameraMatrix(1, 1);
   };
   return (
-    <div className="h-100 w-100">
-      <div className="border" style={{ height: "fit-content" }}>
+    <div className="h-100 w-100 p-4 ">
+      <div style={{ height: "fit-content" }}>
         <MultiPlayerHeader
           numberOfCameras={cameraDetails.length}
           onMatrixSelected={onMatrixSelected}
           onUrlUpdated={onDetailsUpdated}
         />
       </div>
-      <div className="flex" style={{ height: "90%" }}>
+      <div className="flex shadow-2 rad-xl" style={{ height: "90%" }}>
         <div className="br" style={{ width: "20%" }}>
           <CameraList
             cameraDetails={cameraDetails}
@@ -79,7 +79,7 @@ export const MultiplePlayer = () => {
         </div>
         <div
           id="grid-container"
-          className="p-2"
+          className="p-5 h-100"
           style={{
             width: "80%",
             display: "grid",
@@ -90,10 +90,10 @@ export const MultiplePlayer = () => {
             cameraMatrix[0].length === noOfCols &&
             [...Array(noOfRows)].map((_, row) => {
               return (
-                <div key={row} className="cols bb">
+                <div key={row} className="cols h-100">
                   {[...Array(noOfCols)].map((_, col) => {
                     return cameraMatrix[row] && cameraMatrix[row][col].name ? (
-                      <div key={col} className="col br">
+                      <div key={col} className="col h-100">
                         {noOfRows == 1 ? (
                           <ShakaPlayer
                             key={selectedCamera.url}

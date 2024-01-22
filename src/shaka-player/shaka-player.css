@@ -7,9 +7,10 @@
 }
 .videoWrapper {
   position: relative;
-  padding-bottom: 56.25%; /* 16:9 */
-  height: 0;
+  /* padding-bottom: 56.25%; */
+  /* height: 0; */
   background-color: black;
+  height: 100%;
 }
 .videoWrapper video {
   position: absolute;

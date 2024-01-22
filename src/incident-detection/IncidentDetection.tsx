@@ -102,12 +102,6 @@ export const IncidentDetection = () => {
   }, []);
   return (
     <div className="p-4 h-100 w-100 g-1 flex">
-      {/* <div style={{ height: "35rem", width: "50rem", margin: "auto" }}> */}
-      {/* <div className="text-header semibold size-5">Detected Incidents</div> */}
-      {/* <div className="shadow-2 h-100">
-          <ClientDataTable columns={TableCols} rows={incidents} paginate />
-        </div> */}
-      {/* </div> */}
       <div className="rad-xl flex h-100 shadow-2 w-100">
         <div className="br h-100 " style={{ width: "20%", overflow: "auto" }}>
           <CameraList

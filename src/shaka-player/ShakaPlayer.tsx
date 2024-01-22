@@ -4,6 +4,7 @@ import "shaka-player/dist/controls.css";
 import "./shaka-player.css";
 import { Camera } from "../multi-player/CameraList";
 import { Notify } from "@WESCO-International/wdp-ui-components/components/notify";
+import WescoLogo from "@WESCO-International/wdp-ui-components/components/icon/WescoLogo";
 
 type ShakaPlayerProps = {
   src: string;
@@ -118,21 +119,25 @@ function ShakaPlayer(
   if (!src || playbackError) {
     return (
       <div
-        className="flex center border"
+        className="flex center border h-100"
         style={{
           position: "relative",
           borderColor: playbackError ? "red" : "",
           minWidth: 200,
         }}
       >
-        <img src={process.env.PUBLIC_URL + "/wesco.png"} />
+        <img
+          src={process.env.PUBLIC_URL + "/wesco.png"}
+          style={{ width: 350 }}
+        />
+        {/* <WescoLogo style={{ height: 200, width: 200, opacity: 0.3 }} /> */}
         {playbackError ? (
           <Notify
-            style={{ position: "absolute" }}
+            style={{ position: "absolute", top: 10, right: 6 }}
             variant="danger"
             msg={`Failed to load video (Error code : ${playbackError.code})`}
             closable={false}
-            title="Error"
+            showIcon={false}
           />
         ) : (
           ""
@@ -142,7 +147,7 @@ function ShakaPlayer(
   }
   return (
     <div id={cameraDetail?.name} ref={uiContainerRef} className="videoWrapper">
-      <div className="flex sb w-100 p-2 semibold size-6" style={{ zIndex: 9 }}>
+      <div className="flex sb w-100 p-2 semibold size-6" style={{ zIndex: 1 }}>
         <span className="text-white">{cameraDetail?.name}</span>
         <span className="text-primary-dark">{live ? "Live" : ""}</span>
       </div>
