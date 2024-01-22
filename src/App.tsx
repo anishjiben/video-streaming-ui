@@ -31,7 +31,7 @@ function App() {
   return (
     <>
       {/* <div className="br" style={{ width: "100%", height: "100%" }}> */}
-      <BrowserRouter>
+      <BrowserRouter basename={process.env.PUBLIC_URL}>
         <Routes>
           <Route path="/" element={<MainLayout />}>
             <Route index path="multi-view" element={<MultiplePlayer />} />
