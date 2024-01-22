@@ -22,6 +22,7 @@ const dropdownOptions = [
   { label: "Shaka Player", value: "Shaka" },
   { label: "Multiple Player", value: "Multiple" },
 ];
+
 function App() {
   const [value, setValue] = useState("");
   const [url, setUrl] = useState("");
@@ -34,7 +35,7 @@ function App() {
         <Routes>
           <Route path="/" element={<MainLayout />}>
             <Route index path="multi-view" element={<MultiplePlayer />} />
-            <Route path="axis-webrtc" element={<AxisVideoPlayerWrapper />} />
+            <Route path="axis-webrtc" element={<AxisVideoPlayer />} />
             <Route path="incident-detection" element={<IncidentDetection />} />
           </Route>
           {/* <Route path="/" element={<MultiplePlayer />} />

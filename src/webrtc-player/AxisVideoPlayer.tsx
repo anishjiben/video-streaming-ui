@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import BounceSpinner from "@WESCO-International/wdp-ui-components/components/spinner/BounceSpinner";
+import { useEffect, useState } from "react";
 
 export const AxisVideoPlayer = () => {
   const sessionId = "1";
@@ -6,7 +7,7 @@ export const AxisVideoPlayer = () => {
   let targetId: string = "B8A44F48FC66";
   let orgId: string = "50a2c960-d9a2-4255-a03b-046ac19aab56";
   let access_token: string =
-    "xaxismachinesession_fe943fb0-bad6-41e6-8825-ab64703403b6";
+    "xaxismachinesession_510555f2-eb8d-4f55-b7a7-b189f3a03763";
 
   let init_session_params: any;
   let ws_connection: WebSocket;
@@ -18,6 +19,7 @@ export const AxisVideoPlayer = () => {
   let signalingServerURL =
     "wss://signaling.prod.webrtc.connect.axis.com/client";
   signalingServerURL += "?authorization=Bearer%20" + access_token;
+  const [loading, setLoading] = useState(true);
 
   function getLocalStream() {
     // try to get approval from user to use microphone
@@ -30,6 +32,9 @@ export const AxisVideoPlayer = () => {
 
   const onWebsocketOpen = (evt: any) => {
     console.log("WebSocket Open: ", evt);
+    if (ws_connection.readyState !== 1) {
+      return;
+    }
     ws_connection.send('{"type":"hello", "id":"noid"}');
     start_time = new Date().getTime();
 
@@ -196,6 +201,7 @@ export const AxisVideoPlayer = () => {
     remoteStream.addTrack(evt.track, remoteStream);
     const videopanel: any = document.getElementById("axis-webrtc-player-web");
     videopanel.srcObject = evt.streams[0];
+    // setLoading(false);
   }
 
   function onPlay() {
@@ -365,8 +371,40 @@ export const AxisVideoPlayer = () => {
     // };
   }, [signalingServerURL]);
   return (
-    <div className="flex center w-100 h-100">
-      <video id="axis-webrtc-player-web" autoPlay />
+    <div className="p-4 h-100 w-100 g-1 flex dcol">
+      <div className="text-header bold size-4">WebRTC Live</div>
+      <div className="shadow-2 flex h-100 w-100">
+        <div className="flex aic p-5 " style={{ width: "45%" }}>
+          <div className="flex dcol p-5  border">
+            <div>
+              <span className="semibold text-header size-5">Targert ID : </span>
+              {targetId}
+            </div>
+            <div>
+              <span className="semibold text-header size-5">
+                Organization ID :
+              </span>{" "}
+              {orgId}
+            </div>
+          </div>
+        </div>
+        <div className="flex center" style={{ width: "50%" }}>
+          {loading && (
+            <div className="h-100 w-100 flex center">
+              <BounceSpinner />
+            </div>
+          )}
+          <video
+            style={{ visibility: loading ? "hidden" : "visible" }}
+            className="shadow-2"
+            id="axis-webrtc-player-web"
+            autoPlay
+            onLoadedData={() => {
+              setLoading(false);
+            }}
+          />
+        </div>
+      </div>
     </div>
   );
 };
