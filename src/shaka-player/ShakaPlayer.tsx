@@ -46,6 +46,9 @@ function ShakaPlayer(
     }
     const player = new shaka.Player(videoRef.current);
     // playerConfiguration && player.configure(playerConfiguration);
+    player.configure({
+      manifest: { retryParameters: { maxAttempts: 15, baseDelay: 60000 } },
+    });
     setPlayer(player);
 
     const ui = new shaka.ui.Overlay(

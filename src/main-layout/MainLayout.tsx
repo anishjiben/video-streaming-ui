@@ -14,6 +14,7 @@ export const LeftNavItems = () => {
   return (
     <>
       <NavbarItem
+        className="mr-2"
         style={{
           backgroundColor: location.pathname.includes("multi-view")
             ? "#e8e8e9"
@@ -25,6 +26,7 @@ export const LeftNavItems = () => {
         onClick={() => navigate("/multi-view")}
       />
       <NavbarItem
+        className="mr-2"
         style={{
           backgroundColor: location.pathname.includes("incident-detection")
             ? "#e8e8e9"

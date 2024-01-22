@@ -1,3 +1,5 @@
+import { Button } from "@WESCO-International/wdp-ui-components/components/button";
+import { Input } from "@WESCO-International/wdp-ui-components/components/input";
 import BounceSpinner from "@WESCO-International/wdp-ui-components/components/spinner/BounceSpinner";
 import { useEffect, useState } from "react";
 
@@ -7,7 +9,7 @@ export const AxisVideoPlayer = () => {
   let targetId: string = "B8A44F48FC66";
   let orgId: string = "50a2c960-d9a2-4255-a03b-046ac19aab56";
   let access_token: string =
-    "xaxismachinesession_510555f2-eb8d-4f55-b7a7-b189f3a03763";
+    "xaxismachinesession_94a70d99-83b5-49ce-bf82-62e0aa45f11a";
 
   let init_session_params: any;
   let ws_connection: WebSocket;
@@ -18,8 +20,9 @@ export const AxisVideoPlayer = () => {
   let local_stream: any = null;
   let signalingServerURL =
     "wss://signaling.prod.webrtc.connect.axis.com/client";
-  signalingServerURL += "?authorization=Bearer%20" + access_token;
-  const [loading, setLoading] = useState(true);
+  // signalingServerURL += "?authorization=Bearer%20" + access_token;
+  const [loading, setLoading] = useState(false);
+  const [token, setToken] = useState("");
 
   function getLocalStream() {
     // try to get approval from user to use microphone
@@ -286,7 +289,7 @@ export const AxisVideoPlayer = () => {
       type: type,
       targetId: targetId,
       orgId: orgId,
-      accessToken: access_token,
+      accessToken: token,
       data: data,
     });
     console.log("Send signal : ", s);
@@ -344,7 +347,7 @@ export const AxisVideoPlayer = () => {
     }
 
     // access_token = urlParams.get("accessToken");
-    if (access_token != null) {
+    if (token != null) {
       //   signalingServerURL += "?authorization=Bearer%20" + access_token;
     }
 
@@ -365,7 +368,7 @@ export const AxisVideoPlayer = () => {
   }
 
   useEffect(() => {
-    startSession();
+    // startSession();
     // return () => {
     //   ws_connection.close();
     // };
@@ -386,6 +389,37 @@ export const AxisVideoPlayer = () => {
               </span>{" "}
               {orgId}
             </div>
+            <div>
+              {" "}
+              <span className="semibold text-header size-5">
+                Access Token :
+              </span>{" "}
+              <span className="flex">
+                {" "}
+                <Input
+                  className="mr-2"
+                  id="camera1"
+                  value={token}
+                  onChange={(e: any) => {
+                    console.log(e.target.value);
+                    if (e.target.value) setToken(e.target.value);
+                  }}
+                />
+                <Button
+                  id="btn13_0"
+                  label={loading ? "Loading..." : "Load"}
+                  variant="wdp-primary"
+                  size="small"
+                  loading={loading}
+                  onClick={() => {
+                    setLoading(true);
+                    signalingServerURL += "?authorization=Bearer%20" + token;
+                    startSession();
+                  }}
+                />
+              </span>
+              <div className="flex center"></div>
+            </div>
           </div>
         </div>
         <div className="flex center" style={{ width: "50%" }}>
@@ -396,7 +430,7 @@ export const AxisVideoPlayer = () => {
           )}
           <video
             style={{ visibility: loading ? "hidden" : "visible" }}
-            className="shadow-2"
+            // className="shadow-2"
             id="axis-webrtc-player-web"
             autoPlay
             onLoadedData={() => {
