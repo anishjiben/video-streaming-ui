@@ -33,7 +33,7 @@ export const IncidentDetection = () => {
         setError(error);
       }
     };
-
+    fetchData();
     const intervalId = setInterval(fetchData, 10000);
 
     return () => clearInterval(intervalId);
