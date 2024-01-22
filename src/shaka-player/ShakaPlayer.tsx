@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import shaka, { Player } from "shaka-player/dist/shaka-player.ui";
 import "shaka-player/dist/controls.css";
 import "./shaka-player.css";
@@ -40,66 +40,60 @@ function ShakaPlayer(
     }
   }, []);
 
-  const vodManifestNotFoundHandler = (
-    neError: any /* shaka.net.NetworkingEngine.RetryEvent */
-  ) => {
-    const code = neError.error.code;
-    const data = neError.error.data;
-
-    if (code === shaka.util.Error.Code.BAD_HTTP_STATUS) {
-      if (
-        // each type of error has its own data structure (or none at all), tread with care
-        Array.isArray(data) &&
-        data[1] === 404 &&
-        data[4] === shaka.net.NetworkingEngine.RequestType.MANIFEST
-      ) {
-        // Throwing inside a retry callback will immediately stop retries
-        throw new Error(neError.error);
-
-        // A proprietary error code can also be thrown
-        // throw new shaka.util.Error(
-        //   shaka.util.Error.Severity.CRITICAL,
-        //   shaka.util.Error.Category.NETWORK,
-        //   'RECOGNIZABLE_ERROR_MESSAGE'
-        // );
-      }
-    }
-  };
-  // Effect to handle component mount & mount.
-  // Not related to the src prop, this hook creates a shaka.Player instance.
-  // This should always be the first effect to run.
-  const loadPlayer = async () => {
+  useEffect(() => {
     if (!uiContainerRef.current || !videoRef.current) {
       return;
     }
-    const localPlayer = new shaka.Player();
-    setPlayer(localPlayer);
+    const player = new shaka.Player(videoRef.current);
+    // playerConfiguration && player.configure(playerConfiguration);
+    setPlayer(player);
+
     const ui = new shaka.ui.Overlay(
-      localPlayer,
+      player,
       uiContainerRef.current,
       videoRef.current
     );
+    // const uiConfig = { ...defaultUiConfig, ...uiConfiguration };
+    // ui.configure(uiConfig);
     setUi(ui);
-    await localPlayer.attach(videoRef.current);
-    // const controls: any = ui.getControls();
-    // const player = controls.getPlayer();
-    setPlayer(localPlayer);
-    ui.configure({});
-    try {
-      await localPlayer.load(src);
-      setLive(localPlayer.isLive());
-      if (localPlayer.isLive()) {
-        videoRef.current?.play();
+
+    return () => {
+      player.destroy();
+      if (ui) {
+        ui.destroy();
       }
-    } catch (networkErr) {
-      handlePlaybackError(networkErr);
+    };
+  }, []);
+
+  const loadVideo = () => {
+    if (player && src) {
+      player
+        .load(src)
+        .then(() => {
+          setLive(player.isLive());
+          if (player.isLive()) {
+            videoRef.current?.play();
+            ui?.configure({
+              controlPanelElements: [
+                "play_pause",
+                "spacer",
+                "mute",
+                "volume",
+                "overflow_menu",
+              ],
+              overflowMenuButtons: ["quality", "playback_rate"],
+            });
+          }
+        })
+        .catch((networkErr: any) => {
+          console.log("Error : ", networkErr);
+          handlePlaybackError(networkErr);
+        });
     }
   };
-  React.useEffect(() => {
-    if (src) {
-      loadPlayer();
-    }
-  }, []);
+  useEffect(() => {
+    loadVideo();
+  }, [player, src]);
 
   // Define a handle for easily referencing Shaka's player & ui API's.
   React.useImperativeHandle(

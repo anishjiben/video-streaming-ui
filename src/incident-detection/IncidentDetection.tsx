@@ -26,7 +26,7 @@ export const IncidentDetection = () => {
         if (newData) {
           setLoading(false);
           // setSelectedCamera(newData[0]);
-          setIncidents(newData);
+          setIncidents(newData.slice().reverse());
         }
         setError(null);
       } catch (error) {
@@ -71,7 +71,7 @@ export const IncidentDetection = () => {
               />
             </div>
           ) : (
-            <div className="flex center w-100">
+            <div className="flex center w-100 size-4 semibold text-title">
               Please select an Incident to view
             </div>
           )}
