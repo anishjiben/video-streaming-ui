@@ -1,125 +1,82 @@
 import { useEffect, useState } from "react";
-import { ClientDataTable } from "@WESCO-International/wdp-ui-components/components/table/DataTable";
-import { Button } from "@WESCO-International/wdp-ui-components/components/button";
-import { FaPlay } from "@WESCO-International/react-svg-icons/fa/FaPlay";
-import { MdPlayCircleOutline } from "@WESCO-International/react-svg-icons/md/MdPlayCircleOutline";
-import { Dialog } from "@WESCO-International/wdp-ui-components/components/dialog";
 import ShakaPlayer from "../shaka-player/ShakaPlayer";
-import { MdClose } from "@WESCO-International/react-svg-icons/md/MdClose";
 import CameraList, { Camera } from "../multi-player/CameraList";
+import BounceSpinner from "@WESCO-International/wdp-ui-components/components/spinner/BounceSpinner";
 
-const TableCols = [
-  { key: "name", name: "Name" },
-  {
-    key: "cameraName",
-    name: "Camera Name",
-    formatter: (args: any) => {
-      return <div>---</div>;
-    },
-  },
-  {
-    key: "description",
-    name: "Description",
-    formatter: (args: any) => {
-      return <div>---</div>;
-    },
-  },
-  {
-    key: "view",
-    name: "",
-    width: 60,
-    cellClass: "flex center",
-    formatter: (args: any) => {
-      return (
-        <Dialog
-          escDismiss
-          outClickDismiss
-          render={({ close, labelId, descriptionId }) => (
-            <div className="box">
-              <div className="flex end pb-2">
-                <Button
-                  variant="wdp-tertiary"
-                  icon={<MdClose />}
-                  size="small"
-                  onClick={close}
-                />
-              </div>
-              <ShakaPlayer
-                key={args.row.name}
-                src={args.row.url}
-                cameraDetail={args.row}
-              />
-            </div>
-          )}
-        >
-          <Button
-            id="btn3_8"
-            variant="wdp-tertiary"
-            size="small"
-            accentColor="success"
-            style={{ height: 25, width: 25 }}
-            icon={<MdPlayCircleOutline />}
-          />
-        </Dialog>
-      );
-    },
-  },
-];
+const isArrayPresent = (array1: any, array2: any) => {
+  const matchingElements = array2.filter((element: any) =>
+    array1.includes(element)
+  );
+  const isSubarray = matchingElements.length === array2.length;
+  return isSubarray;
+};
 export const IncidentDetection = () => {
-  const [incidents, setIncidents] = useState([
-    {
-      name: "Demo 1",
-      url: "https://stgpartnerintegration.blob.core.windows.net/bitmovincontainer/VOD1/manifest.mpd",
-    },
-    {
-      name: "Demo 2",
-      url: "https://stgpartnerintegration.blob.core.windows.net/bitmovincontainer/VOD1/manifest.mpd",
-    },
-    {
-      name: "Demo 3",
-      url: "https://stgpartnerintegration.blob.core.windows.net/bitmovincontainer/VOD1/manifest.mpd",
-    },
-    {
-      name: "Demo 4",
-      url: "https://stgpartnerintegration.blob.core.windows.net/bitmovincontainer/VOD1/manifest.mpd",
-    },
-    {
-      name: "Demo 5",
-      url: "https://stgpartnerintegration.blob.core.windows.net/bitmovincontainer/VOD1/manifest.mpd",
-    },
-  ]);
+  const [incidents, setIncidents] = useState<any>([]);
+  const [error, setError] = useState<any>(null);
   const [selectedCamera, setSelectedCamera] = useState<any>(incidents[0]);
+  const [newIncidentAvailable, setNewIncidentAvailable] = useState(false);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    fetch("http://20.25.113.232:8081/media")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        setIncidents(data);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://20.25.113.232:8081/media");
+        const newData = await response.json();
+
+        if (newData) {
+          setLoading(false);
+          // setSelectedCamera(newData[0]);
+          setIncidents(newData);
+        }
+        setError(null);
+      } catch (error) {
+        setError(error);
+      }
+    };
+
+    const intervalId = setInterval(fetchData, 5000);
+
+    return () => clearInterval(intervalId);
   }, []);
+
+  if (loading) {
+    return (
+      <div className="h-100 w-100 flex center">
+        <BounceSpinner />
+      </div>
+    );
+  }
   return (
     <div className="p-4 h-100 w-100 g-1 flex">
-      <div className="rad-xl flex h-100 shadow-2 w-100">
-        <div className="br h-100 " style={{ width: "20%", overflow: "auto" }}>
-          <CameraList
-            cameraDetails={incidents}
-            selectedCamera={selectedCamera}
-            onCameraSelect={(camera: Camera) => {
-              setSelectedCamera(camera);
-            }}
-          />
+      {incidents.length > 0 && (
+        <div className="rad-xl flex h-100 shadow-2 w-100">
+          <div className="br h-100 " style={{ width: "20%", overflow: "auto" }}>
+            <div className="flex center bold size-5 m-2 text-header">
+              Incidents
+            </div>
+            <CameraList
+              cameraDetails={incidents}
+              selectedCamera={selectedCamera}
+              onCameraSelect={(camera: Camera) => {
+                setSelectedCamera(camera);
+              }}
+            />
+          </div>
+          {selectedCamera ? (
+            <div className="p-5 h-100" style={{ width: "80%" }}>
+              <ShakaPlayer
+                key={selectedCamera.url}
+                src={selectedCamera.url}
+                cameraDetail={selectedCamera}
+              />
+            </div>
+          ) : (
+            <div className="flex center w-100">
+              Please select an Incident to view
+            </div>
+          )}
         </div>
-        <div className="p-5 h-100" style={{ width: "80%" }}>
-          <ShakaPlayer
-            key={selectedCamera.url}
-            src={selectedCamera.url}
-            cameraDetail={selectedCamera}
-          />
-        </div>
-      </div>
+      )}
     </div>
   );
 };

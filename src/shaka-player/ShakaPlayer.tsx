@@ -5,6 +5,7 @@ import "./shaka-player.css";
 import { Camera } from "../multi-player/CameraList";
 import { Notify } from "@WESCO-International/wdp-ui-components/components/notify";
 import WescoLogo from "@WESCO-International/wdp-ui-components/components/icon/WescoLogo";
+import { FaVideo } from "@WESCO-International/react-svg-icons/fa/FaVideo";
 
 type ShakaPlayerProps = {
   src: string;
@@ -124,6 +125,7 @@ function ShakaPlayer(
           position: "relative",
           borderColor: playbackError ? "red" : "",
           minWidth: 200,
+          // aspectRatio: 16 / 9,
         }}
       >
         <img
@@ -149,7 +151,9 @@ function ShakaPlayer(
     <div id={cameraDetail?.name} ref={uiContainerRef} className="videoWrapper">
       <div className="flex sb w-100 p-2 semibold size-6" style={{ zIndex: 1 }}>
         <span className="text-white">{cameraDetail?.name}</span>
-        <span className="text-primary-dark">{live ? "Live" : ""}</span>
+        <span className="text-danger">
+          {live ? <FaVideo style={{ height: 25, width: 35 }} /> : ""}
+        </span>
       </div>
 
       <video

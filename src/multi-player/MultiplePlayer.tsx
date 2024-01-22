@@ -81,6 +81,8 @@ export const MultiplePlayer = () => {
           id="grid-container"
           className="p-5 h-100"
           style={{
+            // aspectRatio: 16 / 9,
+            // overflow: "auto",
             width: "80%",
             display: "grid",
             gridTemplateRows: `repeat(${noOfRows}, 1fr)`,

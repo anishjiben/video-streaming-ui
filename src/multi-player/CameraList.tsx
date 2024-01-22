@@ -22,7 +22,7 @@ export const CameraList = ({
         return (
           <Button
             key={camera.name}
-            className="norad size-5 semi-bold flex start"
+            className="norad size-6 semi-bold flex start"
             size="large"
             label={camera.name}
             variant="wdp-ghost"
